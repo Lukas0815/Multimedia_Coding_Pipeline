@@ -1,48 +1,9 @@
-from typing import List, Generator
-
-
-def mm_encode(source: Generator[bytes, None, None]) -> Generator[bytes, None, None]:
- 
-    for byte in source:
-        # TODO: Do something sensible.
-        work = int.from_bytes(byte, byteorder='big')       #give int representation of byte
-        #split in 4 bit front and 4 bit end (both represented in int)
-        front_int = work >> 4
-        end_int = work & 15
-
-        front = ham74(front_int)
-        end = ham74(end_int)
-      
-        # print("1: ", bytes(int(front,2)))
-        # print("2: ", int(front,2).to_bytes(1, byteorder='big', signed=False))
-
-        # one can only return ONE byte. So yield twice. YES, THIS WORKS AND NOBODY TOLD ME
-        yield int(front,2).to_bytes(1, byteorder='big', signed=False)
-        yield int(end, 2).to_bytes(1, byteorder='big', signed=False)
-        #print("orginal: ", byte)
-
-
-def mm_decode(source: Generator[bytes, None, None]) -> Generator[bytes, None, None]:
-    for byte in source:
-
-        # TODO: Do something sensible.
-        front_int = decode(byte)
-        end_int = decode(next(source))
-        # print("byte: ", byte, "  next: ", next(source))
-
-        #putting it back together
-        ges = front_int << 4
-        ges = ges + end_int
-        erg = ges.to_bytes(1, byteorder='big', signed=False)
-        # print("rec: ", byte, " front: ", front_int, " end: ", end_int)
-        #print("rec: ", erg)
-        yield erg
-        
 
 # gets int as input, return hammingcode of x as string
 def ham74(x):
         test1 = x & 13          #1101
         p1 = count1(test1) % 2
+        print("test1: ", bin(test1))
 
         test2 = x & 11          #1011
         p2 = count1(test2) % 2
@@ -52,6 +13,7 @@ def ham74(x):
 
         binx = bin(x)[2:].zfill(4)
         code = str(p1) + str(p2) + binx[0] + str(p3) + binx[1:]
+        print('p1: ', p1, ' p2: ', p2, ' p3: ', p3, ' binx[0]: ', binx[0], ' rest: ', binx[1:])
 
         # return string representation
         return code 
@@ -97,3 +59,5 @@ def decode(byte):
                 #print("byte: ", byte, "s1-s3", s1, s2, s3, "changed: ", ''.join(s), "  original data:  ", originalBytes(intrep))
                 #print("rec: ", originalBytes(intrep))
                 return originalBytes(intrep)
+
+print("ham: ", ham74(6))
