@@ -54,7 +54,7 @@ def ham74(x):
         code = str(p1) + str(p2) + binx[0] + str(p3) + binx[1:]
 
         # return string representation
-        return code 
+        return '0' + code 
 
 # gets int as input and counts amount of 1 in bin(x)
 def count1(x):
@@ -75,7 +75,7 @@ def decode(byte):
         t1 = x & 0b01010101
         s1 = count1(t1) % 2
 
-        t2 = x & 0b00110010
+        t2 = x & 0b00110011
         s2 = count1(t2) % 2
 
         t3 = x & 0b00001111
